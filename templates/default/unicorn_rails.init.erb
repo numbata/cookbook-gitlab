@@ -20,11 +20,10 @@
 ### END INIT INFO
 
 # Source function library if it exists
-if [ ! -f /etc/init.d/functions ]; then
-    exit 0
+if [ -f /etc/init.d/functions ]; then
+  . /etc/init.d/functions
 fi
 
-. /etc/init.d/functions
 
 DAEMON_OPTS="-c <%= node['gitlab']['app_home'] %>/config/unicorn.rb -E production -D"
 NAME=unicorn_rails
