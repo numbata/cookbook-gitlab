@@ -101,7 +101,7 @@ ruby_block "save node data" do
   block do
     node.save
   end
-  not_if { Chef::Config[:solo]
+  not_if { Chef::Config[:solo] }
   action :create
 end
 
@@ -198,6 +198,8 @@ template "#{node['gitlab']['app_home']}/config/unicorn.rb" do
   group node['gitlab']['group']
   mode 0644
 end
+
+package 'daemon'
 
 # Render unicorn_rails init script
 template "/etc/init.d/unicorn_rails" do
