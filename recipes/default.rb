@@ -182,6 +182,11 @@ execute "gitlab-bundle-install" do
   not_if { File.exists?("#{node['gitlab']['app_home']}/vendor/bundle") }
 end
 
+directory "#{node['gitlab']['app_home']}/tmp" do
+  user node['gitlab']['user']
+  group node['gitlab']['group']
+end
+
 # Setup sqlite database for Gitlab
 execute "gitlab-bundle-rake" do
   command "bundle exec rake gitlab:app:setup RAILS_ENV=production"
