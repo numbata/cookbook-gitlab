@@ -40,14 +40,15 @@ start() {
   if [ -f /etc/profile.d/gitlab.sh ]; then
     . /etc/profile.d/gitlab.sh
   fi
-  CD_TO_APP_DIR="cd <%= node['gitlab']['app_home'] %>"
   START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
   START_RESQUE_PROCESS="./resque.sh"
   echo -n "Starting $NAME: "
   if [ `whoami` = root ]; then
-    daemon `sudo -u gitlab sh -c "$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS"`
+    daemon --verbose --user=gitlab --chdir=<%= node['gitlab']['app_home'] %> -- $START_DAEMON_PROCESS
+    daemon --verbose --user=gitlab --chdir=<%= node['gitlab']['app_home'] %> -- $START_RESQUE_PROCESS
   else
-    daemon `$CD_TO_APP_DIR > /dev/null 2>&1 && $START_DAEMON_PROCESS && $START_RESQUE_PROCESS`
+    daemon --verbose --chdir=<%= node['gitlab']['app_home'] %> -- $START_DAEMON_PROCESS
+    daemon --verbose --chdir=<%= node['gitlab']['app_home'] %> -- $START_RESQUE_PROCESS
   fi
   echo
 }
