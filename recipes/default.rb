@@ -195,3 +195,5 @@ execute "gitlab-bundle-rake" do
   group node['gitlab']['group']
   not_if { File.exists?("#{node['gitlab']['app_home']}/db/production.sqlite3") }
 end
+
+include_recipe 'gitlab::nginx_unicorn'

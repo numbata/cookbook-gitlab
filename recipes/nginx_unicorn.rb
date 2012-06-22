@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-include_recipe 'gitlab::default'
-
 package 'nginx'
 
 # Render unicorn template
