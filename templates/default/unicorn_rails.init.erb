@@ -19,9 +19,14 @@
 # Description:       unicorn_rails init script as shipped with gitlab cookbook
 ### END INIT INFO
 
-# Source function library if it exists
+# For CentOS
 if [ -f /etc/init.d/functions ]; then
   . /etc/init.d/functions
+fi
+
+# For Ubuntu
+if [ -f /lib/lsb/init-functions ]; then
+  /lib/lsb/init-functions
 fi
 
 
