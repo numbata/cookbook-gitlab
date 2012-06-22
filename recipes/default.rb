@@ -18,11 +18,10 @@
 # limitations under the License.
 #
 
-# Include cookbook dependencies
 %w{ ruby_build gitlab::gitolite build-essential
     readline sudo openssh xml zlib python::pip
-    redisio::install redisio::enable sqlite }.each do |requirement|
-  include_recipe requirement
+    redisio::install redisio::enable sqlite }.each do |dependency|
+  include_recipe dependency
 end
 
 # There are problems deploying on Redhat provided rubies.
