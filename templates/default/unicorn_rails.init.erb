@@ -32,7 +32,9 @@ PID=<%= node['gitlab']['app_home'] %>/tmp/pids/unicorn.pid
 RESQUE_PID=<%= node['gitlab']['app_home'] %>/tmp/pids/resque_worker.pid
 
 start() {
-  . /etc/profile.d/gitlab.sh || exit 1
+  if [ -f /etc/profile.d/gitlab.sh ]; then
+    . /etc/profile.d/gitlab.sh
+  fi
   CD_TO_APP_DIR="cd <%= node['gitlab']['app_home'] %>"
   START_DAEMON_PROCESS="bundle exec unicorn_rails $DAEMON_OPTS"
   START_RESQUE_PROCESS="./resque.sh"
