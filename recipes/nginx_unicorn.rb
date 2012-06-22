@@ -2,6 +2,8 @@
 
 include_recipe 'gitlab::default'
 
+package 'nginx'
+
 # Render unicorn template
 template "#{node['gitlab']['app_home']}/config/unicorn.rb" do
   owner node['gitlab']['user']
