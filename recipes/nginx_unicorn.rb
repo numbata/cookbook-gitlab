@@ -26,6 +26,8 @@ end
   end
 end
 
+file("/etc/nginx/sites-enabled/default") { action :delete }
+
 # Render nginx default vhost config
 template "/etc/nginx/conf.d/default.conf" do
   owner "root"
