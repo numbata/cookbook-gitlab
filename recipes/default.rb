@@ -187,8 +187,14 @@ directory "#{node['gitlab']['app_home']}/tmp" do
   group node['gitlab']['group']
 end
 
-# Setup sqlite database for Gitlab
-execute "gitlab-bundle-rake" do
+execute "precompile-gitlab-assets" do
+  command "bundle exec rake assets:precompile RAILS_ENV=production"
+  cwd node['gitlab']['app_home']
+  user node['gitlab']['user']
+  group node['gitlab']['group']
+end
+
+execute "setup-gitlab-database" do
   command "bundle exec rake gitlab:app:setup RAILS_ENV=production"
   cwd node['gitlab']['app_home']
   user node['gitlab']['user'] 
