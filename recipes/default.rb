@@ -112,7 +112,7 @@ template "#{node['gitlab']['home']}/.ssh/id_rsa" do
     :private_key => gitlab_sshkey.private_key
   )
   mode 0600
-  not_if { File.exists?("#{node['gitlab']['home']}/.ssh/id_rsa") }
+  #not_if { File.exists?("#{node['gitlab']['home']}/.ssh/id_rsa") }
 end
 
 # Render public key template for gitlab user
@@ -145,7 +145,7 @@ execute "install-gitlab-key" do
   command "su - #{node['gitlab']['git_user']} -c 'perl #{node['gitlab']['gitolite_home']}/src/gitolite setup -pk #{node['gitlab']['git_home']}/gitlab.pub'"
   user "root"
   cwd node['gitlab']['git_home']
-  not_if "grep -q '#{node['gitlab']['user']}' #{node['gitlab']['git_home']}/.ssh/authorized_keys"
+  #not_if "grep -q '#{node['gitlab']['user']}' #{node['gitlab']['git_home']}/.ssh/authorized_keys"
 end
 
 # Clone Gitlab repo from github
