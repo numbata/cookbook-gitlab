@@ -199,7 +199,7 @@ execute "setup-gitlab-database" do
   cwd node['gitlab']['app_home']
   user node['gitlab']['user'] 
   group node['gitlab']['group']
-  not_if { File.exists?("#{node['gitlab']['app_home']}/db/production.sqlite3") }
+  # not_if { File.exists?("#{node['gitlab']['app_home']}/db/production.sqlite3") }
 end
 
 include_recipe 'gitlab::nginx_unicorn'
