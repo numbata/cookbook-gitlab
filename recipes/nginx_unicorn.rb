@@ -42,6 +42,11 @@ template "/etc/nginx/sites-available/gitlab" do
   group "root"
   mode 0644
   source "nginx.gitlab.conf.erb"
+
+  variables(
+    hostname: "gitlab.#{node.domain}"
+  )
+
   notifies :restart, "service[nginx]", :delayed
 end
 

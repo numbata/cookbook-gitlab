@@ -27,6 +27,8 @@ default['gitlab']['app_home'] = "#{node['gitlab']['home']}/gitlab"
 default['gitlab']['gitlab_url'] = "git://github.com/gitlabhq/gitlabhq.git"
 default['gitlab']['gitlab_branch'] = "master"
 
+default['gitlab']['hostname'] = node.fqdn
+
 # Required packages for Gitlab
 case node['platform']
 when "ubuntu","debian"

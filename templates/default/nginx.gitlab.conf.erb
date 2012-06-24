@@ -1,9 +1,9 @@
 server {
     listen       80;
     client_max_body_size 4G;
-    server_name  _;
+    server_name  <%= @hostname || node.gitlab.hostname %>;
 
-    access_log  /var/log/nginx/<%= node['hostname'] %>.access.log  combined;
+    access_log  /var/log/nginx/<%= @hostname || node['hostname'] %>.access.log  combined;
 
     # path for static files
     root <%= node['gitlab']['app_home'] %>/public;
