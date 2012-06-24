@@ -34,5 +34,15 @@ template "/etc/nginx/conf.d/default.conf" do
   group "root"
   mode 0644
   source "nginx.default.conf.erb"
-  notifies :restart, "service[nginx]"
+  notifies :restart, "service[nginx]", :delayed
 end
+
+template "/etc/nginx/sites-available/gitlab" do
+  owner "root"
+  group "root"
+  mode 0644
+  source "nginx.gitlab.conf.erb"
+  notifies :restart, "service[nginx]", :delayed
+end
+
+link("/etc/nginx/sites-enabled/gitlab") { to "/etc/nginx/sites-available/gitlab"}
