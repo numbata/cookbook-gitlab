@@ -21,6 +21,9 @@ action :add do
   Chef::Log.info "Adding user '#{new_resource.name}' to Gitlab"
 
   chef_gem 'rest-client'
+  chef_gem 'nokogiri' do
+    version "~> 1.5.5"
+  end
   require  'rest_client'
 
   gitlab_url = 'localhost'
