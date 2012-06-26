@@ -24,8 +24,8 @@ def initialize(*args)
   @action = :add
 end
 
-attribute :name,          kind_of: String, name_attribute: true
-attribute :email,         kind_of: String
-attribute :password,      kind_of: String
-attribute :administrator, default: false
-attribute :ssh_key,       kind_of: String, default: nil
+attribute :name,     kind_of: String, name_attribute: true
+attribute :email,    kind_of: String
+attribute :password, kind_of: String
+attribute :admin,    default: false
+attribute :ssh_key,  kind_of: String, default: nil
