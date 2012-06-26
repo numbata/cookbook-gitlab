@@ -19,6 +19,20 @@
 
 action :add do
   Chef::Log.info "Adding user '#{new_resource.name}' to Gitlab"
+
+  # Hack around in Gitlab
+  require "#{node.gitlab.app_home}/config/boot"
+  require "#{node.gitlab.app_home}/config/application"
+  Rails.env = 'production'
+  Rails.application.require_environment!
+
+  user = ::User.new(
+    name:     @new_resource.name,
+    email:    @new_resource.email,
+    password: @new_resource.password
+  )
+  user.admin = @new_resource.admin
+  user.save!
 end
 
 action :remove do
