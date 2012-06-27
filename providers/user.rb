@@ -21,18 +21,41 @@ action :add do
   Chef::Log.info "Adding user '#{new_resource.name}' to Gitlab"
 
   # Hack around in Gitlab
-  require "#{node.gitlab.app_home}/config/boot"
-  require "#{node.gitlab.app_home}/config/application"
-  Rails.env = 'production'
-  Rails.application.require_environment!
+  new_gitlab_user = @new_resource
+  add_gitlab_user_script_path = "#{node.gitlab.app_home}/add_gitlab_user.rb"
+  file add_gitlab_user_script_path do
+    owner node['gitlab']['user']
+    group node['gitlab']['group']
+    mode  0755
+    content <<-CODE
+      #!/usr/bin/env ruby
 
-  user = ::User.new(
-    name:     @new_resource.name,
-    email:    @new_resource.email,
-    password: @new_resource.password
-  )
-  user.admin = @new_resource.admin
-  user.save!
+      require "#{node.gitlab.app_home}/config/boot"
+      require "#{node.gitlab.app_home}/config/application"
+      Rails.env = 'production'
+      Rails.application.require_environment!
+
+      user = ::User.where(email: "#{new_gitlab_user.email}")[0] || ::User.new(
+        name:     "#{new_gitlab_user.name}",
+        email:    "#{new_gitlab_user.email}",
+        password: "#{new_gitlab_user.password}"
+      )
+      user.admin = #{new_gitlab_user.admin}
+      user.save!
+
+      if #{new_gitlab_user.ssh_key ? "true" : "false"}
+        @key = user.keys.new(title: 'Added by Chef', key: "#{new_gitlab_user.ssh_key}")
+        @key.save!
+      end
+    CODE
+  end
+
+  execute "add_gitlab_user.rb" do
+    cwd     node['gitlab']['app_home']
+    command "bundle exec ruby #{add_gitlab_user_script_path}"
+    user  node['gitlab']['user']
+    group node['gitlab']['group']
+  end
 end
 
 action :remove do
