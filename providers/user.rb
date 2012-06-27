@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+# This file generates the class Chef::Resource::GitlabUser
+
 action :add do
   Chef::Log.info "Adding user '#{new_resource.name}' to Gitlab"
 
