@@ -36,6 +36,20 @@ action :add do
       project_owner = ::User.where(email: "#{new_project.owner_email}")[0]
       admin_project = ::Project.new(name: "#{new_project.name}", path: "#{new_project.path}", code: "#{new_project.code}", description: "Added by Chef", owner: project_owner)
       admin_project.save!
+
+
+      team_members_emails = #{new_project.team_members.map { |gitlab_user| gitlab_user.email }.to_s}
+      team_members_ids = team_members_emails.map { |user_email| ::User.where(email: user_email)[0].id }
+
+      team_members_ids.each do |user_id|
+        puts "Add user with id=#\{user_id} to project #\{admin_project.name}"
+        users_project = ::UsersProject.new(
+          :user_id => user_id,
+          :project_access => ::UsersProject::MASTER
+        )
+        users_project.project = admin_project
+        users_project.save!
+      end
     CODE
   end
 

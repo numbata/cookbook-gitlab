@@ -28,3 +28,4 @@ attribute :name,        kind_of: String, name_attribute: true
 attribute :path,        kind_of: String
 attribute :code,        kind_of: String
 attribute :owner_email, kind_of: String
+attribute :team_members, kind_of: Array
