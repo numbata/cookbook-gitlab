@@ -22,7 +22,7 @@ action :add do
 
   # Hack around in Gitlab
   new_gitlab_user = @new_resource
-  add_gitlab_user_script_path = "#{node.gitlab.app_home}/add_gitlab_user.rb"
+  add_gitlab_user_script_path = "#{node.gitlab.app_home}/add_gitlab_user_#{new_gitlab_user.name.downcase.gsub(/\s/, '_')}.rb"
   file add_gitlab_user_script_path do
     owner node['gitlab']['user']
     group node['gitlab']['group']
@@ -50,7 +50,7 @@ action :add do
     CODE
   end
 
-  execute "add_gitlab_user.rb" do
+  execute add_gitlab_user_script_path.split('/')[-1] do
     cwd     node['gitlab']['app_home']
     command "bundle exec ruby #{add_gitlab_user_script_path}"
     user  node['gitlab']['user']
