@@ -108,7 +108,7 @@ file "#{node['gitlab']['home']}/.ssh/id_rsa" do
   group node['gitlab']['group']
   mode 0600
   content gitlab_sshkey.private_key
-  #not_if { File.exists?("#{node['gitlab']['home']}/.ssh/id_rsa") }
+  not_if { File.exists?("#{node[:gitlab][:home]}/.ssh/id_rsa") }
 end
 
 file "#{node['gitlab']['home']}/.ssh/id_rsa.pub" do
@@ -116,6 +116,7 @@ file "#{node['gitlab']['home']}/.ssh/id_rsa.pub" do
   group node['gitlab']['group']
   mode 0644
   content gitlab_sshkey.ssh_public_key
+  not_if { File.exists?("#{node[:gitlab][:home]}/.ssh/id_rsa.pub") }
 end
 
 # Render public key template for gitolite user
