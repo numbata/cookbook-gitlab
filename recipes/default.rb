@@ -198,26 +198,12 @@ end
 
 gitlab_database_exists = File.exists?("#{node['gitlab']['app_home']}/db/production.sqlite3")
 
-execute "rake db:setup" do
-  command "bundle exec rake db:setup RAILS_ENV=production"
-  cwd node['gitlab']['app_home']
-  user node['gitlab']['user'] 
-  group node['gitlab']['group']
-end
-
-execute "rake db:seed_fu" do
-  command "bundle exec rake db:seed_fu RAILS_ENV=production"
+execute "setup-gitlab-database" do
+  command "bundle exec rake gitlab:app:setup RAILS_ENV=production"
   cwd node['gitlab']['app_home']
   user node['gitlab']['user']
   group node['gitlab']['group']
   not_if { gitlab_database_exists }
-end
-
-execute "rake gitlab:app:enable_automerge" do
-  command "bundle exec rake gitlab:app:enable_automerge RAILS_ENV=production"
-  cwd node['gitlab']['app_home']
-  user node['gitlab']['user']
-  group node['gitlab']['group']
 end
 
 include_recipe 'gitlab::nginx_unicorn'
