@@ -93,7 +93,6 @@ end
 Gem.clear_paths
 require 'sshkey'
 gitlab_sshkey = SSHKey.generate(:type => 'RSA', :comment => "#{node['gitlab']['user']}@#{node['fqdn']}")
-node.set_unless['gitlab']['public_key'] = gitlab_sshkey.ssh_public_key
 
 # Save public_key to node, unless it is already set.
 ruby_block "save node data" do
@@ -104,22 +103,19 @@ ruby_block "save node data" do
   action :create
 end
 
-# Render private key template
-template "#{node['gitlab']['home']}/.ssh/id_rsa" do
+file "#{node['gitlab']['home']}/.ssh/id_rsa" do
   owner node['gitlab']['user']
   group node['gitlab']['group']
-  variables(
-    :private_key => gitlab_sshkey.private_key
-  )
   mode 0600
+  content gitlab_sshkey.private_key
   #not_if { File.exists?("#{node['gitlab']['home']}/.ssh/id_rsa") }
 end
 
-# Render public key template for gitlab user
-template "#{node['gitlab']['home']}/.ssh/id_rsa.pub" do
+file "#{node['gitlab']['home']}/.ssh/id_rsa.pub" do
   owner node['gitlab']['user']
   group node['gitlab']['group']
   mode 0644
+  content gitlab_sshkey.ssh_public_key
 end
 
 # Render public key template for gitolite user
