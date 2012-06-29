@@ -41,12 +41,14 @@ action :add do
 
       project = ::Project.where(name: "#{project_name}")[0]
 
-      key = project.deploy_keys.new(title: "#{key_name}", key: "#{new_resource.public_key}")
-      key.save!
+      unless project.deploy_keys.where(key: "#{new_resource.public_key}")
+        key = project.deploy_keys.new(title: "#{key_name}", key: "#{new_resource.public_key}")
+        key.save!
+      end
     CODE
   end
 
-  execute add_deploy_key_script_path.split('/')[-1] do
+  execute ::File.basename(add_deploy_key_script_path) do
     cwd     node['gitlab']['app_home']
     command "bundle exec ruby #{add_deploy_key_script_path}"
     user  node['gitlab']['user']
