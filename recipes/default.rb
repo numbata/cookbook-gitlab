@@ -119,13 +119,6 @@ file "#{node['gitlab']['home']}/.ssh/id_rsa.pub" do
   not_if { File.exists?("#{node[:gitlab][:home]}/.ssh/id_rsa.pub") }
 end
 
-# Render public key template for gitolite user
-template "#{node['gitlab']['git_home']}/gitlab.pub" do
-  source "id_rsa.pub.erb"
-  owner node['gitlab']['git_user']
-  group node['gitlab']['git_group']
-  mode 0644
-end
 
 # Configure gitlab user to auto-accept localhost SSH keys
 template "#{node['gitlab']['home']}/.ssh/config" do
@@ -135,6 +128,17 @@ template "#{node['gitlab']['home']}/.ssh/config" do
   mode 0644
 end
 
+gitlab_is_already_authorized = "grep -q '#{node['gitlab']['user']}' #{node['gitlab']['git_home']}/.ssh/authorized_keys"
+
+# Render public key template for gitolite user
+file "#{node['gitlab']['git_home']}/gitlab.pub" do
+  owner node['gitlab']['git_user']
+  group node['gitlab']['git_group']
+  mode 0644
+  content gitlab_sshkey.ssh_public_key
+  not_if gitlab_is_already_authorized
+end
+
 # Sorry for this ugliness.
 # It seems maybe something is wrong with the 'gitolite setup' script.
 # This was implemented as a workaround.
@@ -142,7 +146,7 @@ execute "install-gitlab-key" do
   command "su - #{node['gitlab']['git_user']} -c 'perl #{node['gitlab']['gitolite_home']}/src/gitolite setup -pk #{node['gitlab']['git_home']}/gitlab.pub'"
   user "root"
   cwd node['gitlab']['git_home']
-  #not_if "grep -q '#{node['gitlab']['user']}' #{node['gitlab']['git_home']}/.ssh/authorized_keys"
+  not_if gitlab_is_already_authorized
 end
 
 # Clone Gitlab repo from github
