@@ -206,4 +206,11 @@ execute "setup-gitlab-database" do
   not_if { gitlab_database_exists }
 end
 
+execute "migrate-gitlab-database" do
+  command "bundle exec rake db:migrate RAILS_ENV=production"
+  cwd node['gitlab']['app_home']
+  user node['gitlab']['user']
+  group node['gitlab']['group']
+end
+
 include_recipe 'gitlab::nginx_unicorn'
