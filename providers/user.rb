@@ -37,17 +37,19 @@ action :add do
       Rails.env = 'production'
       Rails.application.require_environment!
 
-      user = ::User.where(email: "#{new_gitlab_user.email}")[0] || ::User.new(
-        name:     "#{new_gitlab_user.name}",
-        email:    "#{new_gitlab_user.email}",
-        password: "#{new_gitlab_user.password}"
-      )
-      user.admin = #{new_gitlab_user.admin}
-      user.save!
+      unless ::User.where(email: "#{new_gitlab_user.email}")[0]
+        user = ::User.new(
+          name:     "#{new_gitlab_user.name}",
+          email:    "#{new_gitlab_user.email}",
+          password: "#{new_gitlab_user.password}"
+        )
+        user.admin = #{new_gitlab_user.admin}
+        user.save!
 
-      if #{new_gitlab_user.ssh_key ? "true" : "false"}
-        @key = user.keys.new(title: 'Added by Chef', key: "#{new_gitlab_user.ssh_key}")
-        @key.save!
+        if #{new_gitlab_user.ssh_key ? "true" : "false"}
+          @key = user.keys.new(title: 'Added by Chef', key: "#{new_gitlab_user.ssh_key}")
+          @key.save!
+        end
       end
     CODE
   end
