@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: gitlab
-# Attributes:: default 
+# Attributes:: default
 #
 # Copyright 2012, Gerald L. Hevener Jr., M.S.
 # Copyright 2012, Eric G. Wolfe
@@ -28,6 +28,10 @@ default['gitlab']['gitlab_url'] = "https://github.com/one-os/gitlabhq.git"
 default['gitlab']['gitlab_branch'] = "v2.6.0+patches"
 
 default['gitlab']['hostname'] = node.fqdn
+default['gitlab']['web_host'] = node.fqdn
+default['gitlab']['email_host'] = node.fqdn
+default['gitlab']['projects_limit'] = 10
+default['gitlab']['port'] = 80
 
 # Required packages for Gitlab
 case node['platform']
@@ -65,7 +69,7 @@ end
 
 default['gitlab']['trust_local_sshkeys'] = "yes"
 
-# Problems deploying this on RedHat provided rubies. 
+# Problems deploying this on RedHat provided rubies.
 case node['platform']
 when "redhat","centos","scientific","amazon"
   default['gitlab']['install_ruby'] = "1.9.2-p290"

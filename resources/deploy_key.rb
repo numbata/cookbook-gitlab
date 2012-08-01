@@ -24,6 +24,6 @@ def initialize(*args)
   @action = :add
 end
 
-attribute :name,         kind_of: String, name_attribute: true
-attribute :project_name, kind_of: String
-attribute :public_key,   kind_of: String
+attribute :name,         :kind_of => String, :name_attribute => true
+attribute :project_name, :kind_of => String
+attribute :public_key,   :kind_of => String

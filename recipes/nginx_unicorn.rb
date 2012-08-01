@@ -44,7 +44,7 @@ template "/etc/nginx/sites-available/gitlab" do
   source "nginx.gitlab.conf.erb"
 
   variables(
-    hostname: "gitlab.#{node.domain}"
+    :hostname => "gitlab.#{node.domain}"
   )
 
   notifies :restart, "service[nginx]", :delayed
